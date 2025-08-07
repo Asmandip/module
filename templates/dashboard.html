@@ -1,0 +1,44 @@
+<!-- নিয়ন্ত্রণ প্যানেল সেকশনে এই কোড যোগ করুন -->
+<div class="control-section">
+    <h3>সিস্টেম কনফিগারেশন</h3>
+    
+    <div class="form-group">
+        <label for="apiToggle">API সক্রিয় করুন</label>
+        <input type="checkbox" id="apiToggle" 
+               {% if config.api_enabled %}checked{% endif %}>
+    </div>
+    
+    <div class="form-group">
+        <label for="refreshInterval">রিফ্রেশ সময় (সেকেন্ড)</label>
+        <input type="number" id="refreshInterval" 
+               value="{{ config.refresh_interval }}">
+    </div>
+    
+    <div class="form-group">
+        <label for="autoTrading">অটো ট্রেডিং</label>
+        <input type="checkbox" id="autoTrading" 
+               {% if config.features.auto_trading %}checked{% endif %}>
+    </div>
+    
+    <button class="btn-save" onclick="saveSettings()">সেটিংস সংরক্ষণ করুন</button>
+</div>
+
+<script>
+function saveSettings() {
+    const settings = {
+        'api_enabled': document.getElementById('apiToggle').checked,
+        'refresh_interval': parseInt(document.getElementById('refreshInterval').value),
+        'features.auto_trading': document.getElementById('autoTrading').checked
+    };
+    
+    fetch('/update-config', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(settings)
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert('সেটিংস সফলভাবে আপডেট হয়েছে!');
+    });
+}
+</script>
